@@ -1,7 +1,7 @@
+import 'package:d_n/widgets/custom_text.dart';
 import 'package:flutter/material.dart';
-import '../widgets/custom_text.dart';
-import '../theme/color_theme.dart';
-import '../theme/text_theme.dart';
+import 'package:d_n/theme/color_theme.dart';
+import 'package:d_n/theme/text_theme.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -20,10 +20,22 @@ class _SplashScreenState extends State<SplashScreen> {
     return Scaffold(
       body: Container(
         width: double.infinity,
-        decoration: const BoxDecoration(
-          color: ABColors.MAIN_THEME,
+        height: double.infinity,
+        decoration: GradientDesign.BlackGradient,
+        child: Column(
+          children: [
+            SizedBox(height: screenHeight / 932 * 440),
+            CustomText(
+              text: 'D-n',
+              style: DNTextTheme.SplashMain,
+            ),
+            SizedBox(height: screenHeight / 932 * 330),
+            CustomText(
+              text: 'Copyright 2024. D-n All rights reserved.',
+              style: DNTextTheme.SplashDesc,
+            ),
+          ],
         ),
-        child: const Column(),
       ),
     );
   }

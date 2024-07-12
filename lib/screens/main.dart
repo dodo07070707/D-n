@@ -6,7 +6,7 @@ import '../theme/color_theme.dart';
 import '../theme/text_theme.dart';
 import 'package:d_n/screens/splash_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:d_n/screens/start_screen.dart';
+import 'start_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -46,8 +46,9 @@ class _MyAppState extends State<MyApp> {
           brightness: Brightness.light,
         ),
       ),
-      home: Scaffold(
-        body: _showSplashScreen
+      home: const Scaffold(
+        body: SplashScreen(),
+        /*body: _showSplashScreen
             ? const Scaffold(body: SplashScreen())
             : FutureBuilder(
                 future: getInfo(),
@@ -62,7 +63,7 @@ class _MyAppState extends State<MyApp> {
                     }
                   }
                 },
-              ),
+              ),*/
       ),
     );
   }
