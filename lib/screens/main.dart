@@ -1,12 +1,8 @@
-import 'package:d_n/screens/main_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../widgets/custom_text.dart';
-import '../theme/color_theme.dart';
-import '../theme/text_theme.dart';
+import 'package:d_n/screens/main_screen.dart';
 import 'package:d_n/screens/splash_screen.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'start_screen.dart';
+import 'package:d_n/screens/start_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -21,18 +17,18 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  final bool _showSplashScreen = true;
-  double textScaleFactor = 0.85;
+  bool _showSplashScreen = true;
 
   @override
   void initState() {
     super.initState();
-  }
-
-  Future<String?> getInfo() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? Name = prefs.getString('year');
-    return Name;
+    Future.delayed(const Duration(seconds: 2), () {
+      if (mounted) {
+        setState(() {
+          _showSplashScreen = false;
+        });
+      }
+    });
   }
 
   @override
@@ -46,24 +42,8 @@ class _MyAppState extends State<MyApp> {
           brightness: Brightness.light,
         ),
       ),
-      home: const Scaffold(
-        body: SplashScreen(),
-        /*body: _showSplashScreen
-            ? const Scaffold(body: SplashScreen())
-            : FutureBuilder(
-                future: getInfo(),
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const SplashScreen();
-                  } else {
-                    if (snapshot.hasData) {
-                      return const StartScreen();
-                    } else {
-                      return const MainScreen();
-                    }
-                  }
-                },
-              ),*/
+      home: Scaffold(
+        body: _showSplashScreen ? const SplashScreen() : const MainScreen(),
       ),
     );
   }
