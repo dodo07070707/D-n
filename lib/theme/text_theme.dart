@@ -21,4 +21,17 @@ abstract class DNTextTheme {
     color: Colors.white.withOpacity(0.3),
     letterSpacing: 0,
   );
+  static final StarthMain = TextStyle(
+    fontFamily: 'Ydestreet',
+    fontSize: 19,
+    color: Colors.white,
+    letterSpacing: -0.8,
+    shadows: [
+      Shadow(
+        blurRadius: 10,
+        color: Colors.white.withOpacity(0.7),
+        offset: const Offset(0, 0),
+      ),
+    ],
+  );
 }

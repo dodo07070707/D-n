@@ -10,7 +10,7 @@ abstract class GradientDesign {
       begin: Alignment.topCenter,
       end: Alignment.bottomCenter,
       colors: [
-        Color(0xFF222222),
+        Color.fromARGB(255, 51, 51, 51),
         Colors.black,
         Colors.black,
       ],
