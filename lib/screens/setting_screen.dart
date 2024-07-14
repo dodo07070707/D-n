@@ -17,7 +17,10 @@ class SettingScreen extends StatefulWidget {
 
 class _SettingScreenState extends State<SettingScreen> {
   int? year;
+  String? nowphrase;
   final TextEditingController _controller = TextEditingController();
+  final TextEditingController _phrasecontroller = TextEditingController();
+  List<String> stringArray = [];
 
   void _saveYear() async {
     int? year = int.tryParse(_controller.text);
@@ -42,9 +45,48 @@ class _SettingScreenState extends State<SettingScreen> {
     }
   }
 
+  void _savePhrase() async {
+    if (nowphrase != null) {
+      stringArray.add(nowphrase!);
+      _phrasecontroller.clear();
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      await prefs.setStringList('stringArray', stringArray);
+      Get.snackbar(
+        '알림',
+        '격언 추가 성공',
+        snackPosition: SnackPosition.BOTTOM,
+        duration: const Duration(seconds: 2),
+        backgroundColor: Colors.white.withOpacity(0.4),
+      );
+    } else {
+      Get.snackbar(
+        '알림',
+        '알맞는 격언을 입력해주세요.',
+        snackPosition: SnackPosition.BOTTOM,
+        duration: const Duration(seconds: 2),
+        backgroundColor: Colors.white.withOpacity(0.4),
+      );
+    }
+  }
+
+  Future<void> _getStringArrayFromSharedPreferences() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    List<String>? savedArray = prefs.getStringList('stringArray');
+    setState(() {
+      stringArray = savedArray ?? [];
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _getStringArrayFromSharedPreferences();
+  }
+
   @override
   void dispose() {
     _controller.dispose();
+    _phrasecontroller.dispose();
     super.dispose();
   }
 
@@ -61,78 +103,379 @@ class _SettingScreenState extends State<SettingScreen> {
         decoration: const BoxDecoration(color: Colors.black),
         child: Padding(
           padding: EdgeInsets.symmetric(horizontal: screenWidth / 430 * 34),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              SizedBox(height: screenHeight / 932 * 65),
-              GestureDetector(
-                onTap: () {
-                  Get.offAll(() => const MainScreen());
-                },
-                child: Icon(
-                  Icons.arrow_back_ios_new,
-                  color: Colors.white,
-                  size: screenWidth / 430 * 24,
-                ),
-              ),
-              SizedBox(height: screenHeight / 932 * 14),
-              CustomText(
-                  text: 'Your KSAT Year', style: DNTextTheme.SettingMenu),
-              SizedBox(height: screenHeight / 932 * 16),
-              Container(
-                width: screenWidth / 430 * 362,
-                height: screenHeight / 932 * 40,
-                padding: const EdgeInsets.symmetric(horizontal: 10),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(20),
-                  color: Colors.black,
-                  border: Border.all(
-                    color: Colors.white.withOpacity(0.5),
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SizedBox(height: screenHeight / 932 * 65),
+                GestureDetector(
+                  onTap: () {
+                    Get.offAll(() => const MainScreen());
+                  },
+                  child: Icon(
+                    Icons.arrow_back_ios_new,
+                    color: Colors.white,
+                    size: screenWidth / 430 * 24,
                   ),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.grey.withOpacity(0.5),
-                      spreadRadius: 2,
-                      blurRadius: 8,
-                      offset: const Offset(0, 0),
+                ),
+                SizedBox(height: screenHeight / 932 * 14),
+                CustomText(
+                    text: 'Your KSAT Year', style: DNTextTheme.SettingMenu),
+                SizedBox(height: screenHeight / 932 * 16),
+                Container(
+                  width: screenWidth / 430 * 362,
+                  height: screenHeight / 932 * 40,
+                  padding: const EdgeInsets.symmetric(horizontal: 10),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(20),
+                    color: Colors.black,
+                    border: Border.all(
+                      color: Colors.white.withOpacity(0.5),
+                    ),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.grey.withOpacity(0.5),
+                        spreadRadius: 2,
+                        blurRadius: 8,
+                        offset: const Offset(0, 0),
+                      ),
+                    ],
+                  ),
+                  child: TextField(
+                    controller: _controller,
+                    keyboardType: TextInputType.number, // 숫자만 입력 가능하게 설정
+                    textAlign: TextAlign.left,
+                    cursorColor: Colors.white.withOpacity(0.5),
+                    decoration: InputDecoration(
+                      suffixIcon: GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            year = int.tryParse(_controller.text);
+                          });
+                          _saveYear();
+                        },
+                        child: Icon(
+                          Icons.check,
+                          color: Colors.white.withOpacity(0.5),
+                          size: screenWidth / 430 * 20,
+                        ),
+                      ),
+                      focusedBorder: const OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.transparent),
+                      ),
+                      border: const OutlineInputBorder(), // 테두리 설정
+                      filled: true, // 배경색 채우기
+                      fillColor: Colors.transparent, // 배경색 설정
+                    ),
+                    style: TextStyle(
+                      color: Colors.white.withOpacity(0.5),
+                      fontFamily: 'Ydestreet',
+                      height: 1.1,
+                    ),
+                  ),
+                ),
+                SizedBox(height: screenHeight / 932 * 46),
+                CustomText(
+                    text: 'Alert Status', style: DNTextTheme.SettingMenu),
+                SizedBox(height: screenHeight / 932 * 16),
+                Row(
+                  children: [
+                    Container(
+                      width: screenWidth / 430 * 170,
+                      height: screenHeight / 932 * 40,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(20),
+                        color: Colors.black,
+                        border: Border.all(
+                          color: Colors.white.withOpacity(0.5),
+                        ),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.grey.withOpacity(0.5),
+                            spreadRadius: 2,
+                            blurRadius: 8,
+                            offset: const Offset(0, 0),
+                          ),
+                        ],
+                      ),
+                      child: Center(
+                        child: CustomText(
+                          text: 'ON',
+                          style: DNTextTheme.SettingButton,
+                        ),
+                      ),
+                    ),
+                    SizedBox(width: screenWidth / 430 * 22),
+                    Container(
+                      width: screenWidth / 430 * 170,
+                      height: screenHeight / 932 * 40,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(20),
+                        color: Colors.black,
+                        border: Border.all(
+                          color: Colors.white.withOpacity(0.5),
+                        ),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.grey.withOpacity(0.5),
+                            spreadRadius: 2,
+                            blurRadius: 8,
+                            offset: const Offset(0, 0),
+                          ),
+                        ],
+                      ),
+                      child: Center(
+                        child: CustomText(
+                          text: 'OFF',
+                          style: DNTextTheme.SettingButton,
+                        ),
+                      ),
                     ),
                   ],
                 ),
-                child: TextField(
-                  controller: _controller,
-                  keyboardType: TextInputType.number, // 숫자만 입력 가능하게 설정
-                  textAlign: TextAlign.left,
-                  cursorColor: Colors.white.withOpacity(0.5),
-                  decoration: InputDecoration(
-                    suffixIcon: GestureDetector(
-                      onTap: () {
-                        setState(() {
-                          year = int.tryParse(_controller.text);
-                        });
-                        _saveYear();
-                      },
-                      child: Icon(
-                        Icons.check,
-                        color: Colors.white.withOpacity(0.5),
-                        size: screenWidth / 430 * 20,
+                SizedBox(height: screenHeight / 932 * 46),
+                CustomText(
+                    text: 'Delete Pharase Reset',
+                    style: DNTextTheme.SettingMenu),
+                SizedBox(height: screenHeight / 932 * 16),
+                Row(
+                  children: [
+                    Container(
+                      width: screenWidth / 430 * 170,
+                      height: screenHeight / 932 * 40,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(20),
+                        color: Colors.black,
+                        border: Border.all(
+                          color: Colors.white.withOpacity(0.5),
+                        ),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.grey.withOpacity(0.5),
+                            spreadRadius: 2,
+                            blurRadius: 8,
+                            offset: const Offset(0, 0),
+                          ),
+                        ],
+                      ),
+                      child: Center(
+                        child: CustomText(
+                          text: 'ON',
+                          style: DNTextTheme.SettingButton,
+                        ),
                       ),
                     ),
-                    focusedBorder: const OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.transparent),
+                    SizedBox(width: screenWidth / 430 * 22),
+                    Container(
+                      width: screenWidth / 430 * 170,
+                      height: screenHeight / 932 * 40,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(20),
+                        color: Colors.black,
+                        border: Border.all(
+                          color: Colors.white.withOpacity(0.5),
+                        ),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.grey.withOpacity(0.5),
+                            spreadRadius: 2,
+                            blurRadius: 8,
+                            offset: const Offset(0, 0),
+                          ),
+                        ],
+                      ),
+                      child: Center(
+                        child: CustomText(
+                          text: 'OFF',
+                          style: DNTextTheme.SettingButton,
+                        ),
+                      ),
                     ),
-                    border: const OutlineInputBorder(), // 테두리 설정
-                    filled: true, // 배경색 채우기
-                    fillColor: Colors.transparent, // 배경색 설정
-                  ),
-                  style: TextStyle(
-                    color: Colors.white.withOpacity(0.5),
-                    fontFamily: 'Ydestreet',
-                    height: 1.1,
-                  ),
+                  ],
                 ),
-              ),
-            ],
+                SizedBox(height: screenHeight / 932 * 46),
+                CustomText(
+                    text: 'Delete Color Change',
+                    style: DNTextTheme.SettingMenu),
+                SizedBox(height: screenHeight / 932 * 16),
+                Row(
+                  children: [
+                    Container(
+                      width: screenWidth / 430 * 170,
+                      height: screenHeight / 932 * 40,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(20),
+                        color: Colors.black,
+                        border: Border.all(
+                          color: Colors.white.withOpacity(0.5),
+                        ),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.grey.withOpacity(0.5),
+                            spreadRadius: 2,
+                            blurRadius: 8,
+                            offset: const Offset(0, 0),
+                          ),
+                        ],
+                      ),
+                      child: Center(
+                        child: CustomText(
+                          text: 'ON',
+                          style: DNTextTheme.SettingButton,
+                        ),
+                      ),
+                    ),
+                    SizedBox(width: screenWidth / 430 * 22),
+                    Container(
+                      width: screenWidth / 430 * 170,
+                      height: screenHeight / 932 * 40,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(20),
+                        color: Colors.black,
+                        border: Border.all(
+                          color: Colors.white.withOpacity(0.5),
+                        ),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.grey.withOpacity(0.5),
+                            spreadRadius: 2,
+                            blurRadius: 8,
+                            offset: const Offset(0, 0),
+                          ),
+                        ],
+                      ),
+                      child: Center(
+                        child: CustomText(
+                          text: 'OFF',
+                          style: DNTextTheme.SettingButton,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(height: screenHeight / 932 * 46),
+                CustomText(text: 'Add Phrase', style: DNTextTheme.SettingMenu),
+                SizedBox(height: screenHeight / 932 * 16),
+                Column(
+                  children: [
+                    Container(
+                      width: screenWidth / 430 * 362,
+                      height: screenHeight / 932 * 40,
+                      padding: EdgeInsets.fromLTRB(
+                          screenWidth / 430 * 14, 0, screenWidth / 430 * 11, 0),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(20),
+                        color: Colors.black,
+                        border: Border.all(
+                          color: Colors.white.withOpacity(0.5),
+                        ),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.grey.withOpacity(0.5),
+                            spreadRadius: 2,
+                            blurRadius: 8,
+                            offset: const Offset(0, 0),
+                          ),
+                        ],
+                      ),
+                      child: TextField(
+                          controller: _phrasecontroller,
+                          keyboardType: TextInputType.text,
+                          textAlign: TextAlign.left,
+                          cursorColor: Colors.white.withOpacity(0.5),
+                          decoration: InputDecoration(
+                            suffixIcon: GestureDetector(
+                              onTap: () {
+                                setState(() {
+                                  nowphrase = _phrasecontroller.text;
+                                });
+                                _savePhrase();
+                              },
+                              child: Icon(
+                                Icons.check,
+                                color: Colors.white.withOpacity(0.5),
+                                size: screenWidth / 430 * 20,
+                              ),
+                            ),
+                            focusedBorder: const OutlineInputBorder(
+                              borderSide: BorderSide(color: Colors.transparent),
+                            ),
+                            border: const OutlineInputBorder(), // 테두리 설정
+                            filled: true, // 배경색 채우기
+                            fillColor: Colors.transparent, // 배경색 설정
+                          ),
+                          style: DNTextTheme.SettingPhrase),
+                    ),
+                    SizedBox(height: screenHeight / 932 * 10),
+                    stringArray.isEmpty
+                        ? const SizedBox(width: 0, height: 0)
+                        : SizedBox(
+                            width: screenWidth / 430 * 362,
+                            height: screenHeight / 932 * 240,
+                            child: ListView.separated(
+                              padding: EdgeInsets.zero,
+                              itemCount: stringArray.length,
+                              separatorBuilder: (BuildContext ctx, int idx) {
+                                return SizedBox(
+                                    height: screenHeight / 932 * 10);
+                              },
+                              itemBuilder: (context, index) {
+                                return Container(
+                                  width: screenWidth / 430 * 362,
+                                  height: screenHeight / 932 * 40,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(20),
+                                    color: Colors.black,
+                                    border: Border.all(
+                                      color: Colors.white.withOpacity(0.5),
+                                    ),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.grey.withOpacity(0.5),
+                                        spreadRadius: 2,
+                                        blurRadius: 8,
+                                        offset: const Offset(0, 0),
+                                      ),
+                                    ],
+                                  ),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Row(
+                                        children: [
+                                          SizedBox(
+                                              width: screenWidth / 430 * 14),
+                                          CustomText(
+                                            text: stringArray[index],
+                                            style:
+                                                DNTextTheme.SettingListPhrase,
+                                          ),
+                                        ],
+                                      ),
+                                      Row(
+                                        children: [
+                                          Icon(
+                                            Icons.close,
+                                            size: screenWidth / 430 * 20,
+                                            color:
+                                                Colors.white.withOpacity(0.5),
+                                          ),
+                                          SizedBox(
+                                              width: screenWidth / 430 * 30),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                );
+                              },
+                            ),
+                          ),
+                  ],
+                ),
+              ],
+            ),
           ),
         ),
       ),

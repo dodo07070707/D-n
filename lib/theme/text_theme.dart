@@ -73,4 +73,25 @@ abstract class DNTextTheme {
       ),
     ],
   );
+  static final SettingButton = TextStyle(
+    fontFamily: 'Ydestreet',
+    fontSize: 12,
+    color: Colors.white.withOpacity(0.5),
+    letterSpacing: -0.8,
+    height: 0.7,
+  );
+  static final SettingPhrase = TextStyle(
+    fontFamily: 'Ydestreet',
+    fontSize: 12,
+    color: Colors.white.withOpacity(0.5),
+    letterSpacing: -0.8,
+    height: 1,
+  );
+  static final SettingListPhrase = TextStyle(
+    fontFamily: 'Ydestreet',
+    fontSize: 12,
+    color: Colors.white.withOpacity(0.5),
+    letterSpacing: -0.8,
+    height: 0.7,
+  );
 }
