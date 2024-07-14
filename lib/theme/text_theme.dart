@@ -34,4 +34,30 @@ abstract class DNTextTheme {
       ),
     ],
   );
+  static final MainMain = TextStyle(
+    fontFamily: 'Ydestreet',
+    fontSize: 64,
+    color: Colors.white,
+    letterSpacing: -0.8,
+    shadows: [
+      Shadow(
+        blurRadius: 10,
+        color: Colors.white.withOpacity(0.7),
+        offset: const Offset(0, 0),
+      ),
+    ],
+  );
+  static final MainSub = TextStyle(
+    fontFamily: 'Ydestreet',
+    fontSize: 20,
+    color: Colors.white,
+    letterSpacing: -0.8,
+    shadows: [
+      Shadow(
+        blurRadius: 10,
+        color: Colors.white.withOpacity(0.7),
+        offset: const Offset(0, 0),
+      ),
+    ],
+  );
 }
