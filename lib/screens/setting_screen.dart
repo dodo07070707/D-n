@@ -18,6 +18,9 @@ class SettingScreen extends StatefulWidget {
 class _SettingScreenState extends State<SettingScreen> {
   int? year;
   String? nowphrase;
+  int? isAlert;
+  int? isPhrase;
+  int? isColor;
   final TextEditingController _controller = TextEditingController();
   final TextEditingController _phrasecontroller = TextEditingController();
   List<String> stringArray = [];
@@ -77,10 +80,27 @@ class _SettingScreenState extends State<SettingScreen> {
     });
   }
 
+  Future<void> _loadSetting() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      isAlert = prefs.getInt('isAlert');
+      isPhrase = prefs.getInt('isPhrase');
+      isColor = prefs.getInt('isColor');
+    });
+  }
+
+  Future<void> _saveSetting(int isAlert, int isPhrase, int isColor) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setInt('isAlert', isAlert);
+    await prefs.setInt('isPhrase', isPhrase);
+    await prefs.setInt('isColor', isColor);
+  }
+
   @override
   void initState() {
     super.initState();
     _getStringArrayFromSharedPreferences();
+    _loadSetting();
   }
 
   @override
@@ -110,8 +130,10 @@ class _SettingScreenState extends State<SettingScreen> {
               children: [
                 SizedBox(height: screenHeight / 932 * 65),
                 GestureDetector(
-                  onTap: () {
-                    Get.offAll(() => const MainScreen());
+                  onTap: () async {
+                    await _saveSetting(
+                        isAlert ?? 1, isPhrase ?? 1, isColor ?? 1);
+                    await Get.offAll(() => const MainScreen());
                   },
                   child: Icon(
                     Icons.arrow_back_ios_new,
@@ -181,54 +203,82 @@ class _SettingScreenState extends State<SettingScreen> {
                 SizedBox(height: screenHeight / 932 * 16),
                 Row(
                   children: [
-                    Container(
-                      width: screenWidth / 430 * 170,
-                      height: screenHeight / 932 * 40,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(20),
-                        color: Colors.black,
-                        border: Border.all(
-                          color: Colors.white.withOpacity(0.5),
-                        ),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.grey.withOpacity(0.5),
-                            spreadRadius: 2,
-                            blurRadius: 8,
-                            offset: const Offset(0, 0),
+                    GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          isAlert = 1;
+                        });
+                        Get.snackbar(
+                          '알림',
+                          '알림이 켜졌습니다.',
+                          snackPosition: SnackPosition.BOTTOM,
+                          duration: const Duration(seconds: 1),
+                          backgroundColor: Colors.white.withOpacity(0.4),
+                        );
+                      },
+                      child: Container(
+                        width: screenWidth / 430 * 170,
+                        height: screenHeight / 932 * 40,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(20),
+                          color: Colors.black,
+                          border: Border.all(
+                            color: Colors.white.withOpacity(0.5),
                           ),
-                        ],
-                      ),
-                      child: Center(
-                        child: CustomText(
-                          text: 'ON',
-                          style: DNTextTheme.SettingButton,
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.grey.withOpacity(0.5),
+                              spreadRadius: 2,
+                              blurRadius: 8,
+                              offset: const Offset(0, 0),
+                            ),
+                          ],
+                        ),
+                        child: Center(
+                          child: CustomText(
+                            text: 'ON',
+                            style: DNTextTheme.SettingButton,
+                          ),
                         ),
                       ),
                     ),
                     SizedBox(width: screenWidth / 430 * 22),
-                    Container(
-                      width: screenWidth / 430 * 170,
-                      height: screenHeight / 932 * 40,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(20),
-                        color: Colors.black,
-                        border: Border.all(
-                          color: Colors.white.withOpacity(0.5),
-                        ),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.grey.withOpacity(0.5),
-                            spreadRadius: 2,
-                            blurRadius: 8,
-                            offset: const Offset(0, 0),
+                    GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          isAlert = 0;
+                        });
+                        Get.snackbar(
+                          '알림',
+                          '알림이 꺼졌습니다.',
+                          snackPosition: SnackPosition.BOTTOM,
+                          duration: const Duration(seconds: 1),
+                          backgroundColor: Colors.white.withOpacity(0.4),
+                        );
+                      },
+                      child: Container(
+                        width: screenWidth / 430 * 170,
+                        height: screenHeight / 932 * 40,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(20),
+                          color: Colors.black,
+                          border: Border.all(
+                            color: Colors.white.withOpacity(0.5),
                           ),
-                        ],
-                      ),
-                      child: Center(
-                        child: CustomText(
-                          text: 'OFF',
-                          style: DNTextTheme.SettingButton,
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.grey.withOpacity(0.5),
+                              spreadRadius: 2,
+                              blurRadius: 8,
+                              offset: const Offset(0, 0),
+                            ),
+                          ],
+                        ),
+                        child: Center(
+                          child: CustomText(
+                            text: 'OFF',
+                            style: DNTextTheme.SettingButton,
+                          ),
                         ),
                       ),
                     ),
@@ -236,59 +286,86 @@ class _SettingScreenState extends State<SettingScreen> {
                 ),
                 SizedBox(height: screenHeight / 932 * 46),
                 CustomText(
-                    text: 'Delete Pharase Reset',
-                    style: DNTextTheme.SettingMenu),
+                    text: 'Pharase Reset', style: DNTextTheme.SettingMenu),
                 SizedBox(height: screenHeight / 932 * 16),
                 Row(
                   children: [
-                    Container(
-                      width: screenWidth / 430 * 170,
-                      height: screenHeight / 932 * 40,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(20),
-                        color: Colors.black,
-                        border: Border.all(
-                          color: Colors.white.withOpacity(0.5),
-                        ),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.grey.withOpacity(0.5),
-                            spreadRadius: 2,
-                            blurRadius: 8,
-                            offset: const Offset(0, 0),
+                    GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          isPhrase = 1;
+                        });
+                        Get.snackbar(
+                          '알림',
+                          '격언 새로고침이 켜졌습니다.',
+                          snackPosition: SnackPosition.BOTTOM,
+                          duration: const Duration(seconds: 1),
+                          backgroundColor: Colors.white.withOpacity(0.4),
+                        );
+                      },
+                      child: Container(
+                        width: screenWidth / 430 * 170,
+                        height: screenHeight / 932 * 40,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(20),
+                          color: Colors.black,
+                          border: Border.all(
+                            color: Colors.white.withOpacity(0.5),
                           ),
-                        ],
-                      ),
-                      child: Center(
-                        child: CustomText(
-                          text: 'ON',
-                          style: DNTextTheme.SettingButton,
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.grey.withOpacity(0.5),
+                              spreadRadius: 2,
+                              blurRadius: 8,
+                              offset: const Offset(0, 0),
+                            ),
+                          ],
+                        ),
+                        child: Center(
+                          child: CustomText(
+                            text: 'ON',
+                            style: DNTextTheme.SettingButton,
+                          ),
                         ),
                       ),
                     ),
                     SizedBox(width: screenWidth / 430 * 22),
-                    Container(
-                      width: screenWidth / 430 * 170,
-                      height: screenHeight / 932 * 40,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(20),
-                        color: Colors.black,
-                        border: Border.all(
-                          color: Colors.white.withOpacity(0.5),
-                        ),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.grey.withOpacity(0.5),
-                            spreadRadius: 2,
-                            blurRadius: 8,
-                            offset: const Offset(0, 0),
+                    GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          isPhrase = 0;
+                        });
+                        Get.snackbar(
+                          '알림',
+                          '격언 새로고침이 꺼졌습니다.',
+                          snackPosition: SnackPosition.BOTTOM,
+                          duration: const Duration(seconds: 1),
+                          backgroundColor: Colors.white.withOpacity(0.4),
+                        );
+                      },
+                      child: Container(
+                        width: screenWidth / 430 * 170,
+                        height: screenHeight / 932 * 40,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(20),
+                          color: Colors.black,
+                          border: Border.all(
+                            color: Colors.white.withOpacity(0.5),
                           ),
-                        ],
-                      ),
-                      child: Center(
-                        child: CustomText(
-                          text: 'OFF',
-                          style: DNTextTheme.SettingButton,
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.grey.withOpacity(0.5),
+                              spreadRadius: 2,
+                              blurRadius: 8,
+                              offset: const Offset(0, 0),
+                            ),
+                          ],
+                        ),
+                        child: Center(
+                          child: CustomText(
+                            text: 'OFF',
+                            style: DNTextTheme.SettingButton,
+                          ),
                         ),
                       ),
                     ),
@@ -296,59 +373,86 @@ class _SettingScreenState extends State<SettingScreen> {
                 ),
                 SizedBox(height: screenHeight / 932 * 46),
                 CustomText(
-                    text: 'Delete Color Change',
-                    style: DNTextTheme.SettingMenu),
+                    text: 'Color Change', style: DNTextTheme.SettingMenu),
                 SizedBox(height: screenHeight / 932 * 16),
                 Row(
                   children: [
-                    Container(
-                      width: screenWidth / 430 * 170,
-                      height: screenHeight / 932 * 40,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(20),
-                        color: Colors.black,
-                        border: Border.all(
-                          color: Colors.white.withOpacity(0.5),
-                        ),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.grey.withOpacity(0.5),
-                            spreadRadius: 2,
-                            blurRadius: 8,
-                            offset: const Offset(0, 0),
+                    GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          isColor = 1;
+                        });
+                        Get.snackbar(
+                          '알림',
+                          '배경색 변경이 켜졌습니다.',
+                          snackPosition: SnackPosition.BOTTOM,
+                          duration: const Duration(seconds: 1),
+                          backgroundColor: Colors.white.withOpacity(0.4),
+                        );
+                      },
+                      child: Container(
+                        width: screenWidth / 430 * 170,
+                        height: screenHeight / 932 * 40,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(20),
+                          color: Colors.black,
+                          border: Border.all(
+                            color: Colors.white.withOpacity(0.5),
                           ),
-                        ],
-                      ),
-                      child: Center(
-                        child: CustomText(
-                          text: 'ON',
-                          style: DNTextTheme.SettingButton,
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.grey.withOpacity(0.5),
+                              spreadRadius: 2,
+                              blurRadius: 8,
+                              offset: const Offset(0, 0),
+                            ),
+                          ],
+                        ),
+                        child: Center(
+                          child: CustomText(
+                            text: 'ON',
+                            style: DNTextTheme.SettingButton,
+                          ),
                         ),
                       ),
                     ),
                     SizedBox(width: screenWidth / 430 * 22),
-                    Container(
-                      width: screenWidth / 430 * 170,
-                      height: screenHeight / 932 * 40,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(20),
-                        color: Colors.black,
-                        border: Border.all(
-                          color: Colors.white.withOpacity(0.5),
-                        ),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.grey.withOpacity(0.5),
-                            spreadRadius: 2,
-                            blurRadius: 8,
-                            offset: const Offset(0, 0),
+                    GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          isColor = 0;
+                        });
+                        Get.snackbar(
+                          '알림',
+                          '배경색 변경이 꺼졌습니다.',
+                          snackPosition: SnackPosition.BOTTOM,
+                          duration: const Duration(seconds: 1),
+                          backgroundColor: Colors.white.withOpacity(0.4),
+                        );
+                      },
+                      child: Container(
+                        width: screenWidth / 430 * 170,
+                        height: screenHeight / 932 * 40,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(20),
+                          color: Colors.black,
+                          border: Border.all(
+                            color: Colors.white.withOpacity(0.5),
                           ),
-                        ],
-                      ),
-                      child: Center(
-                        child: CustomText(
-                          text: 'OFF',
-                          style: DNTextTheme.SettingButton,
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.grey.withOpacity(0.5),
+                              spreadRadius: 2,
+                              blurRadius: 8,
+                              offset: const Offset(0, 0),
+                            ),
+                          ],
+                        ),
+                        child: Center(
+                          child: CustomText(
+                            text: 'OFF',
+                            style: DNTextTheme.SettingButton,
+                          ),
                         ),
                       ),
                     ),

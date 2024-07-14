@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:d_n/theme/color_theme.dart';
 import 'package:d_n/theme/text_theme.dart';
@@ -17,11 +18,18 @@ class MainScreen extends StatefulWidget {
 class _MainScreenState extends State<MainScreen> {
   int? year;
   int? diffday;
+  int? isAlert;
+  int? isPhrase;
+  int? isColor;
+  int phrasecount = 0;
+  List<String> stringArray = [];
 
   @override
   void initState() {
     super.initState();
     loadSavedYear();
+    loadSavedString();
+    _loadSetting();
   }
 
   Future<void> loadSavedYear() async {
@@ -29,6 +37,23 @@ class _MainScreenState extends State<MainScreen> {
     setState(() {
       year = prefs.getInt('Year');
       calculateDifference(year!);
+    });
+  }
+
+  Future<void> loadSavedString() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    List<String>? savedArray = prefs.getStringList('stringArray');
+    setState(() {
+      stringArray = savedArray ?? [];
+    });
+  }
+
+  Future<void> _loadSetting() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      isAlert = prefs.getInt('isAlert') ?? 1;
+      isPhrase = prefs.getInt('isPhrase') ?? 1;
+      isColor = prefs.getInt('isColor') ?? 1;
     });
   }
 
@@ -45,7 +70,6 @@ class _MainScreenState extends State<MainScreen> {
       Duration difference = today.difference(targetDate);
       diffday = difference.inDays;
     }
-    print(diffday);
   }
 
   @override
@@ -72,22 +96,34 @@ class _MainScreenState extends State<MainScreen> {
                             : 'D${diffday! - 1}',
                 style: DNTextTheme.MainMain),
             CustomText(
-              text: 'Your Better Than You Think.',
+              text: stringArray.isEmpty
+                  ? 'Your Better Than You Think.'
+                  : stringArray[phrasecount],
               style: DNTextTheme.MainSub,
             ),
             SizedBox(height: screenHeight / 932 * 360),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(
-                  Icons.refresh_outlined,
-                  color: Colors.white,
-                  size: screenWidth / 430 * 20,
-                ),
+                (isPhrase == 0)
+                    ? const SizedBox(width: 0, height: 0)
+                    : GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            phrasecount =
+                                (phrasecount + 1) % stringArray.length;
+                          });
+                        },
+                        child: Icon(
+                          Icons.refresh_outlined,
+                          color: Colors.white,
+                          size: screenWidth / 430 * 20,
+                        ),
+                      ),
                 SizedBox(width: screenWidth / 430 * 10),
                 GestureDetector(
-                  onTap: () {
-                    Get.to(() => const SettingScreen());
+                  onTap: () async {
+                    await Get.to(() => const SettingScreen());
                   },
                   child: Icon(
                     Icons.settings_outlined,
