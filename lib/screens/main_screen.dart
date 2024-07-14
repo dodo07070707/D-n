@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:d_n/theme/color_theme.dart';
 import 'package:d_n/theme/text_theme.dart';
+import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:d_n/widgets/custom_text.dart';
+import 'package:d_n/screens/setting_screen.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
@@ -83,10 +85,15 @@ class _MainScreenState extends State<MainScreen> {
                   size: screenWidth / 430 * 20,
                 ),
                 SizedBox(width: screenWidth / 430 * 10),
-                Icon(
-                  Icons.settings_outlined,
-                  color: Colors.white,
-                  size: screenWidth / 430 * 20,
+                GestureDetector(
+                  onTap: () {
+                    Get.to(() => const SettingScreen());
+                  },
+                  child: Icon(
+                    Icons.settings_outlined,
+                    color: Colors.white,
+                    size: screenWidth / 430 * 20,
+                  ),
                 ),
                 SizedBox(width: screenWidth / 430 * 10),
                 Icon(
