@@ -125,7 +125,7 @@ class _InfoScreenState extends State<InfoScreen> {
                     Row(
                       children: [
                         CustomText(
-                            text: '1h 33m 43m',
+                            text: '6h 16m 47m',
                             style: DNTextTheme.SettingListPhrase),
                         SizedBox(width: screenWidth / 430 * 16),
                       ],
