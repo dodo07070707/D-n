@@ -7,6 +7,7 @@ import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:d_n/widgets/custom_text.dart';
 import 'package:d_n/screens/setting_screen.dart';
+import 'package:d_n/screens/info_screen.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
@@ -132,10 +133,15 @@ class _MainScreenState extends State<MainScreen> {
                   ),
                 ),
                 SizedBox(width: screenWidth / 430 * 10),
-                Icon(
-                  Icons.info_outline,
-                  color: Colors.white,
-                  size: screenWidth / 430 * 20,
+                GestureDetector(
+                  onTap: () {
+                    Get.to(() => const InfoScreen());
+                  },
+                  child: Icon(
+                    Icons.info_outline,
+                    color: Colors.white,
+                    size: screenWidth / 430 * 20,
+                  ),
                 ),
               ],
             )

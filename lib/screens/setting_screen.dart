@@ -122,7 +122,8 @@ class _SettingScreenState extends State<SettingScreen> {
         height: screenHeight,
         decoration: const BoxDecoration(color: Colors.black),
         child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: screenWidth / 430 * 34),
+          padding: EdgeInsets.fromLTRB(screenWidth / 430 * 34, 0,
+              screenWidth / 430 * 34, screenHeight / 932 * 60),
           child: SingleChildScrollView(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
