@@ -211,7 +211,7 @@ class _SettingScreenState extends State<SettingScreen> {
                         });
                         Get.snackbar(
                           '알림',
-                          '알림이 켜졌습니다.',
+                          '알림 기능은 준비중입니다.',
                           snackPosition: SnackPosition.BOTTOM,
                           duration: const Duration(seconds: 1),
                           backgroundColor: Colors.white.withOpacity(0.4),
@@ -251,7 +251,7 @@ class _SettingScreenState extends State<SettingScreen> {
                         });
                         Get.snackbar(
                           '알림',
-                          '알림이 꺼졌습니다.',
+                          '알림 기능은 준비중입니다.',
                           snackPosition: SnackPosition.BOTTOM,
                           duration: const Duration(seconds: 1),
                           backgroundColor: Colors.white.withOpacity(0.4),

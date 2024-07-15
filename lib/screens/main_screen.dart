@@ -18,12 +18,15 @@ class MainScreen extends StatefulWidget {
 
 class _MainScreenState extends State<MainScreen> {
   int? year;
-  int? diffday;
+  int diffday = 0;
   int? isAlert;
   int? isPhrase;
   int? isColor;
+  late Color rgbaColor;
   int phrasecount = 0;
   List<String> stringArray = [];
+  late DateTime initialAccessDate;
+  late int accessCounter;
 
   @override
   void initState() {
@@ -31,6 +34,19 @@ class _MainScreenState extends State<MainScreen> {
     loadSavedYear();
     loadSavedString();
     _loadSetting();
+    _setbackColor();
+  }
+
+  Future<void> _setbackColor() async {
+    double hue = diffday < 0 ? diffday / 730 * -360 : diffday / 730 * 360;
+    double saturation = 0.67;
+    double lightness = 0.17;
+    double alpha = 1.0;
+
+    print(diffday);
+
+    // HSL -> RGBA 변환
+    rgbaColor = HSLColor.fromAHSL(alpha, hue, saturation, lightness).toColor();
   }
 
   Future<void> loadSavedYear() async {
@@ -58,7 +74,7 @@ class _MainScreenState extends State<MainScreen> {
     });
   }
 
-  void calculateDifference(int year) {
+  void calculateDifference(int year) async {
     DateTime today = DateTime.now().toLocal();
     DateTime? targetDate;
     for (var date in dateArray) {
@@ -70,6 +86,7 @@ class _MainScreenState extends State<MainScreen> {
     if (targetDate != null) {
       Duration difference = today.difference(targetDate);
       diffday = difference.inDays;
+      _setbackColor();
     }
   }
 
@@ -83,7 +100,20 @@ class _MainScreenState extends State<MainScreen> {
       body: Container(
         width: screenWidth,
         height: screenHeight,
-        decoration: GradientDesign.BlackGradient,
+        decoration: ShapeDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              isColor == 1
+                  ? (rgbaColor ?? Colors.transparent)
+                  : const Color.fromARGB(255, 51, 51, 51),
+              Colors.black,
+              Colors.black,
+            ],
+          ),
+          shape: const LinearBorder(),
+        ),
         child: Column(
           children: [
             SizedBox(height: screenHeight / 932 * 390),
@@ -92,9 +122,9 @@ class _MainScreenState extends State<MainScreen> {
                     ? 'Loading...'
                     : diffday == 0
                         ? 'D-Day'
-                        : diffday! > 0
-                            ? 'D+${diffday!}'
-                            : 'D${diffday! - 1}',
+                        : diffday > 0
+                            ? 'D+$diffday'
+                            : 'D${diffday - 1}',
                 style: DNTextTheme.MainMain),
             CustomText(
               text: stringArray.isEmpty
