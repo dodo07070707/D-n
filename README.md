@@ -1,5 +1,5 @@
 # D-n
-# 하루만에 앱 기획부터 개발까지 완성하기 프로젝트
+# 8시간 안에 앱 기획부터 개발까지 완성하기 프로젝트
 **Subject**  
 수능 디데이 카운터, 학습 격려 어플리케이션  
 **PM, Designer, Developer**  
@@ -8,3 +8,7 @@
 NaN  
 **Used Stack**  
 Dart, Flutter  
+**Used Time**  
+Design : 1h 33m 43s  
+Develop : 6h 16m 47s  
+Total : 7h 51m 30s
