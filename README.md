@@ -4,8 +4,6 @@
 수능 디데이 카운터, 학습 격려 어플리케이션  
 **PM, Designer, Developer**  
 김도윤  
-**Special Thanks**  
-NaN  
 **Used Stack**  
 Dart, Flutter  
 **Used Time**  
